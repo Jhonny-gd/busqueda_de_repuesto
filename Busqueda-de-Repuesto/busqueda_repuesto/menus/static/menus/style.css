@@ -1,0 +1,107 @@
+body {
+    background-color: hsla(203.53846153846155, 82%, 30%, 1);
+    background-image: radial-gradient(circle at 102% 80%, hsla(267.62589928057554, 67%, 59%, 1) 0%, transparent 40.308866813608354%), radial-gradient(circle at 39% 44%, hsla(203.2710280373832, 89%, 46%, 1) 0%, transparent 42.69144621670061%);
+    background-blend-mode: normal, normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-container { /* Contenedor principal: es el que encierra todo el login */
+   
+    max-width: 600px;
+    width: 100%;
+    margin: 30px auto;
+    padding: 1rem 2rem;
+
+     background-color: rgb(151, 149, 149);
+    background-image: radial-gradient(circle at 83% 22%, rgb(199, 194, 187) 0%, transparent 50%), radial-gradient(circle at 0% 50%, rgb(114, 179, 207) 0%, transparent 50%), radial-gradient(circle at 21% 21%, rgb(241, 239, 239) 0%, transparent 50%), radial-gradient(circle at 54% 77%, rgb(149, 191, 204) 0%, transparent 50%), radial-gradient(circle at 30% 75%, rgb(77, 112, 67) 0%, transparent 50%);
+    background-blend-mode: normal, normal, normal, normal, normal;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.logo {
+    text-align: center;
+    margin-top: 40px;
+    
+}
+.login-header{
+    text-align: right;
+}
+.login-header img{
+    width: 90px;
+    height: auto;
+   /*float: right;hace la misma funcion que la de abajo*/
+   margin-bottom: 10px;
+    margin-right: 10px;
+}
+h1{
+    color: #ffffff;/*color del texto*/
+    text-align: center;
+    
+    background-color: lab(0.0 0 0);/*color del fondo*/
+    padding: 20px 40px;
+    border-radius: 10px 10px 100px 10px; 
+    width: fit-content;
+    margin-bottom: 20px;
+}
+.button-salir button{
+   padding: 10px 20px ;
+    font-size: 18px;
+    border: none;
+    border-radius: 500px;
+    cursor: pointer;
+    color: white;                       
+    background-color: #ff0019e0;
+     transition: all 0.3s ; /* Transición suave para el hover */
+    display: inline-block;
+    
+}
+
+.button-salir button:hover {
+ background-color: red; /* Cambia el color al pasar el mouse */
+    color: black;
+    transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
+}
+.button-group {
+   
+    display: flex;
+    flex-direction: column; /*los pone en columnas*/
+    align-items: center;    
+    gap: 15px;
+    
+    margin-top: 10px;
+}
+.button-group button {
+     text-decoration: none; 
+    padding:  10px 60px ;
+    font-size: 18px;
+    border: none;
+    border-radius: 440px  ; /* Bordes redondeados */
+    cursor: pointer;
+    color: white;
+    background-color: #007bff;
+    transition: all 0.3s ; /* Transición suave para el hover */
+    display: inline-block;
+    border : 2px solid #108499; /* Borde del botón */
+   
+}
+.button-group button:hover {
+    background-color: blue; /* Cambia el color al pasar el mouse */
+    color: black;
+    
+    transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
+}
+.login-logo {
+  width: 90px;
+  height: auto;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.iconmenu{
+    width: 200px;
+    height: auto;
+    margin-right: 10px;
+}

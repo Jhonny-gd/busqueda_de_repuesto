@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen de Cotización</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'cotizacion/style.css' %}">
+</head>
+<body id="buscarR">
+      <div class="tira-celeste">
+        <p class="text-end text-muted" style="text-align: right; margin: 10px;">
+           
+        </p>
+        <img src="{% static 'cotizacion/images/logo.png' %}" alt="" />
+    </div>
+    <h1>
+    
+        <img src="{% static 'autenticacion/images/logo.png' %}" alt="" class="logo">
+        Resumen de Cotización
+    </h1>
+
+    <!-- Botón funcional para regresar a la búsqueda -->
+    <div class="button-buscar">
+        <a href="{% url 'busqueda' %}" class="btn-volver" onclick="sessionStorage.clear();">
+            <i class="bi bi-arrow-left"></i> Nueva búsqueda
+        </a>
+    </div>
+
+    <fieldset class="fieldset">
+        <legend>Datos del Cotizante</legend>
+        <p><strong>Nombre:</strong> {{ cotizacion.cotizante.nombre }} {{ cotizacion.cotizante.apellido }}</p>
+        <p><strong>DUI:</strong> {{ cotizacion.cotizante.dui }}</p>
+        <p><strong>Correo:</strong> {{ cotizacion.cotizante.correo }}</p>
+        <p><strong>Teléfono:</strong> {{ cotizacion.cotizante.telefono }}</p>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend>Repuestos Cotizados</legend>
+        <table class="tabla">
+            <tr>
+                <th>Nombre</th>
+                <th>Marca del Repuesto</th>
+                <th>Estado </th>
+                <th>Vehículos Compatibles</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for item in cotizacion.detalles.all %}
+            <tr>
+                <td>{{ item.repuesto.nombre }}</td>
+                <td>{{ item.repuesto.marca }}</td>
+                <td>{{ item.repuesto.estado }}</td>
+                <td>
+                    {% for vehiculo in item.repuesto.compatibilidad.all %}
+                        {{ vehiculo.marca }} {{ vehiculo.modelo }} , ({{ vehiculo.anio }}) , {{ vehiculo.tipo }} , {{ vehiculo.transmision }}<br>
+                    {% endfor %}
+                </td>
+                <td>${{ item.repuesto.precio }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <p style="text-align: right; font-weight: bold; margin-right: 10px;">
+            <strong>Total:</strong> ${{ cotizacion.total }}
+        </p>
+        <h1 style="text-align: center; color: green;">
+            <i class="bi bi-check-circle"></i>Gracias por preferirnos, su cotización ha sido generada exitosamente.
+        </h1>
+    </fieldset>
+
+    <div class="button-buscar">
+        <a href="/" class="btn-volver" onclick="sessionStorage.clear();">
+            <i class="bi bi-house-door"></i> Volver al inicio
+        </a>
+    </div>
+
+    <script>
+        sessionStorage.clear();
+    </script>
+</body>
+</html>

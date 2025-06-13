@@ -1,0 +1,129 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actualizar Negocio</title>
+    <link rel="stylesheet" href="{% static 'negocio/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+
+    <div class="tira-celeste">
+        <p class="text-end text-muted" style="text-align: right; margin: 10px;">
+            Bienvenido, {{ request.user.username }} |
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="color:white">
+                Cerrar Sesión <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </p>
+        <img src="{% static 'negocio/images/logo.png' %}" alt="" />
+    </div>
+
+    <h1><img src="{% static 'negocio/images/actualizar.png' %}" alt="" class="logo2"> Actualizar Negocio</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="mensaje-de-alerta">
+            {{ message }}
+            <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="button-regresar">
+        <button name="btnSalir" onclick="window.location='{% url 'gestionarnegocio' %}'">
+            <i class="bi bi-arrow-left"></i> Salir
+        </button>
+    </div>
+
+    <form method="GET">
+        <fieldset class="fieldset">
+            <legend>Buscar Negocio</legend>
+            <div class="form-linea">
+                <label for="txtBuscarNegocio">Nombre:</label>
+                <input type="text" id="txtBuscarNegocio" name="txtBuscarNegocio" value="{{ texto }}" required>
+            </div>
+            <div class="button-buscar">
+                <button name="btnBuscar"><i class="bi bi-search"></i> Buscar</button>
+            </div>
+        <div class="scroll-tabla">
+            <table id="tablaNegocios" style="width:100%; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>NIT</th>
+                        <th>Ubicación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if resultados %}
+                        {% for negocio in resultados %}
+                        <tr onclick="seleccionarNegocio('{{ negocio.codigo }}', '{{ negocio.nombre }}', '{{ negocio.nit }}', '{{ negocio.ubicacion }}')">
+                            <td>{{ negocio.codigo }}</td>
+                            <td>{{ negocio.nombre }}</td>
+                            <td>{{ negocio.nit }}</td>
+                            <td>{{ negocio.ubicacion }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4">No hay negocios registrados</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        </fieldset>
+    </form>
+
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="fieldset">
+            <legend>Editar Negocio</legend>
+            <div class="form-columnas">
+                <div class="columna">
+                    <div class="form-linea">
+                        <label for="txtCodigoNegocio">Código:</label>
+                        <input type="text" id="txtCodigoNegocio" name="txtCodigoNegocio" readonly>
+                    </div>
+                    <div class="form-linea">
+                        <label for="txtNombreNegocio">Nombre:</label>
+                        <input type="text" id="txtNombreNegocio" name="txtNombreNegocio" required>
+                    </div>
+                </div>
+                <div class="columna">
+                    <div class="form-linea">
+                        <label for="txtNitNegocio">NIT:</label>
+                        <input type="text" id="txtNitNegocio" name="txtNitNegocio" readonly>
+                    </div>
+                    <div class="form-linea">
+                        <label for="txtUbicacionNegocio">Ubicación:</label>
+                        <input type="text" id="txtUbicacionNegocio" name="txtUbicacionNegocio" required>
+                    </div>
+                </div>
+            </div>
+            <div class="button-buscar">
+                <button type="submit" id="btnGuardar" name="btnGuardar"><i class="bi bi-save me-2"></i> Guardar</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <script>
+        function seleccionarNegocio(codigo, nombre, nit, ubicacion) {
+            document.getElementById('txtCodigoNegocio').value = codigo;
+            document.getElementById('txtNombreNegocio').value = nombre;
+            document.getElementById('txtNitNegocio').value = nit;
+            document.getElementById('txtUbicacionNegocio').value = ubicacion;
+
+            const filas = document.querySelectorAll('#tablaNegocios tbody tr');
+            filas.forEach(f => f.classList.remove('fila-seleccionada'));
+            filas.forEach(f => {
+                if (f.cells[0].textContent.trim() === codigo.trim()) {
+                    f.classList.add('fila-seleccionada');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

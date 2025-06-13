@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Repuesto</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'cotizacion/style.css' %}">
+   
+</head>
+<body id="buscarR">
+    
+    <div class="tira-celeste">
+        <p class="text-end text-muted" style="text-align: right; margin: 10px;">
+           ¿Eres una empresa?|
+            <a href="{% url 'login' %}" class="btn btn-danger btn-sm" style="color:white">
+                Iniciar Sesión <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </p>
+        <img src="{% static 'cotizacion/images/logo.png' %}" alt="" />
+    </div>
+    <h1>
+        <img src="{% static 'cotizacion/images/logo.png' %}" alt="" class="logo">
+        Buscar Repuesto 
+    </h1>
+
+    {% if mensaje %}
+        <p style="color: red; font-weight: bold;">{{ mensaje }}</p>
+    {% endif %}
+    {}
+
+    <form method="post">
+    {% csrf_token %}
+
+    <!-- COTIZANTE -->
+    <fieldset class="fieldset" id="cotizante">
+        <legend>Cotizante</legend>
+        <div class="form-linea">
+            <div class="form-column">
+                {{ cotizante_form.nombre.label_tag }}
+                {{ cotizante_form.nombre }}
+                {{ cotizante_form.apellido.label_tag }}
+                {{ cotizante_form.apellido }}
+            </div>
+            <div class="form-column">
+                {{ cotizante_form.dui.label_tag }}
+                {{ cotizante_form.dui }}
+                {{ cotizante_form.telefono.label_tag }}
+                {{ cotizante_form.telefono }}
+                
+            </div>
+            <div class="form-column">
+                {{ cotizante_form.correo.label_tag }}
+                {{ cotizante_form.correo }}
+                
+            </div>
+            
+        </div>
+        {% if not vehiculo_seleccionado %}
+    <div class="button-buscar">
+        <button type="submit" name="ingresar_cotizante">
+            <i class="bi bi-person-check"></i> Confirmar Cotizante
+        </button>
+    </div>
+    {% endif %}
+    </fieldset>
+
+    
+
+  
+
+   <!-- REPUESTOS -->
+    <fieldset class="fieldset" id="repuesto">
+        <legend>Buscar Repuesto</legend>
+        <div class="form-linea">
+            <label for="nombre_repuesto">Nombre:</label>
+            <input id="nombre_repuesto" name="nombre_repuesto" type="text" value="{{ request.POST.nombre_repuesto|default_if_none:'' }}">
+
+            <label for="categoria">Categoría:</label>
+            <select name="categoria">
+                <option value="">-- Seleccione --</option>
+                <option value="">--Seleccionar categoría--</option>
+                                <option value="sitema_electrico">Sistema eléctrico y electrónico</option>
+                                <option value="sistema_frenos">Sistema de frenos</option>
+                                <option value="interior_vehiculo">Interior del vehículo</option>
+                                <option value="sistema_refrigeracion">Sistema de refrigeración</option>
+                                <option value="sistema_combustible">Sistema de combustible</option>
+                                <option value="accesorios_equipacion">Accesorios y equipamiento</option>
+                                <option value="ruedas">Ruedas y neumáticos</option>
+                                <option value="sistema_transmision">Sistema de transmisión</option>
+                                <option value="carroceria">Carrocería y estructura</option>
+                                <option value="sistema_climatizacion">Sistema de climatización</option>
+                                <option value="iluminacion">Iluminación y señalización</option>
+                                <option value="motor">Motor y componentes</option>
+                                <option value="suspension">Sistema de suspensión y dirección</option>
+                                <option value="escape">Sistema de escape</option>
+            </select>
+            
+
+            <label for="estado">Estado:</label>
+            <select name="estado">
+                <option value="">-- Seleccione --</option>
+                <option value="nuevo" {% if request.POST.estado == "nuevo" %}selected{% endif %}>Nuevo</option>
+                <option value="usado" {% if request.POST.estado == "usado" %}selected{% endif %}>Usado</option>
+            </select>
+
+            
+            </select>
+            
+        </div>
+       
+         <div class="form-linea">
+            <label for="marca">Marca:</label>
+            <select name="marca" id="marca">
+                <option value="">-- Seleccione --</option>
+                {% for marca in marcas %}
+                    <option value="{{ marca }}" {% if request.POST.marca == marca %}selected{% endif %}>{{ marca }}</option>
+                {% endfor %}
+            </select>
+        
+            <label for="modelo">Modelo:</label>
+            <select name="modelo" id="modelo">
+                <option value="">-- Seleccione --</option>
+                {% for modelo in modelos %}
+                    <option value="{{ modelo }}" {% if request.POST.modelo == modelo %}selected{% endif %}>{{ modelo }}</option>
+                {% endfor %}
+            </select>
+            <label for="anio">Año:</label>
+            <select name="anio" id="anio">
+                <option value="">-- Seleccione --</option>
+                {% for anio in anios %}
+                    <option value="{{ anio }}" {% if request.POST.anio == anio %}selected{% endif %}>{{ anio }}</option>
+                {% endfor %}    
+            </select>
+        </div>
+        <div class="form-linea">
+            <label for="transmision">Transmisión:</label>
+            <select name="transmision" id="transmision">-- Seleccione --</option>
+            <option value="">-- Seleccione --</option>
+            {% for transmision in transmisiones %}<option value="{{ transmision }}">{{ transmision }}</option>{% endfor %}</select>
+
+            <label for="tipo">Tipo:</label>
+            <select name="tipo" id="tipo">-- Seleccione --</option>
+            <option value="">-- Seleccione --</option>
+            {% for tipo in tipos %}<option value="{{ tipo }}">{{ tipo }}</option>{% endfor %}</select>
+        </div>
+         <div class="form-linea">
+            <label for="orden">Orden:</label>
+            <select name="orden">
+                <option value="">-- Seleccione --</option>
+                <option value="asc" {% if request.POST.orden == "asc" %}selected{% endif %}>Ascendente</option>
+                <option value="desc" {% if request.POST.orden == "desc" %}selected{% endif %}>Descendente</option>
+            </select>
+        </div>
+        <div class="button-buscar">
+            <button type="submit" name="buscar_repuestos"><i class="bi bi-search"></i> Buscar Repuestos</button>
+        </div>
+    </fieldset>
+
+    <!-- RESULTADOS -->
+    {% if repuestos %}
+    <fieldset class="fieldset" id="resultados">
+    <legend>Resultados</legend>
+    <div class="grid-repuestos">
+        {% for repuesto in repuestos %}
+        <div class="card-repuesto">
+            <div class="card-header">
+                <strong>{{ repuesto.nombre }}</strong>
+                <span class="precio">${{ repuesto.precio }}</span>
+            </div>
+            <div class="card-body">
+                {% if repuesto.foto %}
+                    <img src="{{ repuesto.foto.url }}" alt="foto" width="60">
+                {% else %}
+                    Sin imagen
+                {% endif %}
+
+                <p><strong>Marca:</strong> {{ repuesto.marca }}</p>
+                <p><strong>Categoría:</strong> {{ repuesto.categoria }}</p>
+                <p><strong>Estado:</strong> {{ repuesto.estado }}</p>
+                <p><strong>Negocio:</strong> {{ repuesto.negocio.nombre }}</p>
+                <p><strong>Ubicación:</strong> {{ repuesto.negocio.ubicacion }}</p>
+
+                <p><strong>Compatibilidad:</strong></p>
+                <ul>
+                    {% for vehiculo in repuesto.compatibilidad.all %}
+                        <li>{{ vehiculo.marca }} {{ vehiculo.modelo }} {{ vehiculo.anio }} {{ vehiculo.tipo }} {{ vehiculo.transmision }}</li>
+                    {% empty %}
+                        <li>No tiene compatibilidad registrada.</li>
+                    {% endfor %}
+                </ul>
+
+                <div>
+                    <label for="cantidad_{{ repuesto.id }}">Cantidad:</label>
+                    <input type="number" id="cantidad_{{ repuesto.id }}" name="cantidad_{{ repuesto.id }}" min="1" value="1" class="input-cantidad">
+                </div>
+
+                <button name="agregar_repuesto" value="{{ repuesto.id }}" class="btn-agregar">
+                    <i class="bi bi-plus-circle"></i> Agregar
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</fieldset>
+    {% endif %}
+
+    <!-- CARRITO -->
+    {% if carrito %}
+    <fieldset class="fieldset" id="carrito">
+        <legend>Repuestos Seleccionados</legend>
+        <ul>
+            {% for item in carrito %}
+            <li>Repuesto ID: {{ item.repuesto_id }} - Cantidad: {{ item.cantidad }}</li>
+            {% endfor %}
+        </ul>
+        <div class="button-buscar">
+            <button name="generar_cotizacion" value="1" type="submit">
+                <i class="bi bi-check-circle-fill"></i> Generar Cotización
+            </button>
+        </div>
+    </fieldset>
+    {% endif %}
+    </form>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const campos = ['id_nombre', 'id_apellido', 'id_dui', 'id_correo', 'id_telefono',
+                        'marca', 'modelo', 'anio', 'transmision', 'tipo'];
+        campos.forEach(id => {
+            const valor = sessionStorage.getItem(id);
+            const campo = document.getElementById(id);
+            if (valor && campo) {
+                campo.value = valor;
+            }
+            if (campo) {
+                campo.addEventListener('change', () => {
+                    sessionStorage.setItem(id, campo.value);
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

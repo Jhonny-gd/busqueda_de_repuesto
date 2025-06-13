@@ -1,0 +1,108 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Negocio</title>
+    <link rel="stylesheet" href="{% static 'negocio/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+
+    <div class="tira-celeste">
+        <p class="text-end text-muted" style="text-align: right; margin: 10px;">
+            Bienvenido, {{ request.user.username }} |
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="color:white">
+                Cerrar Sesión <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </p>
+        <img src="{% static 'negocio/images/logo.png' %}" alt="" />
+    </div>
+
+    <h1><img src="{% static 'negocio/images/eliminar.png' %}" alt="" class="logo2"> Eliminar Negocio</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="mensaje-de-alerta">
+            {{ message }}
+            <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="button-regresar">
+        <button name="btnSalir" onclick="window.location='{% url 'gestionarnegocio' %}'">
+            <i class="bi bi-arrow-left"></i> Salir
+        </button>
+    </div>
+
+    <form method="GET">
+        <fieldset class="fieldset">
+            <legend>Buscar Negocio</legend>
+            <div class="form-linea">
+                <label for="txtBuscarNegocio">Nombre:</label>
+                <input type="text" id="txtBuscarNegocio" name="txtBuscarNegocio" value="{{ texto }}">
+            </div>
+            <div class="button-buscar">
+                <button id="btnBuscar" name="btnBuscar"><i class="bi bi-search"></i> Buscar</button>
+            </div>
+
+            <div class="scroll-tabla" style="margin-top: 20px;">
+                <table id="dtgNegocio" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>NIT</th>
+                            <th>Ubicación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for negocio in resultados %}
+                        <tr onclick="seleccionarNegocio('{{ negocio.codigo }}')">
+                            <td>{{ negocio.codigo }}</td>
+                            <td>{{ negocio.nombre }}</td>
+                            <td>{{ negocio.nit }}</td>
+                            <td>{{ negocio.ubicacion }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4">No se encontraron resultados</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </form>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="codigoEliminar" name="codigoEliminar">
+        <div class="button-regresar">
+            <button class="btn btn-danger" id="btnEliminar" name="btnEliminar" disabled>
+                <i class="bi bi-trash"></i> Eliminar
+            </button>
+        </div>
+    </form>
+
+    <script>
+        let filaSeleccionada = null;
+        function seleccionarNegocio(codigo) {
+            if (filaSeleccionada) {
+                filaSeleccionada.classList.remove("fila-seleccionada");
+            }
+            const filas = document.querySelectorAll("#dtgNegocio tbody tr");
+            for (let fila of filas) {
+                if (fila.cells[0].textContent.trim() === codigo.trim()) {
+                    fila.classList.add("fila-seleccionada");
+                    filaSeleccionada = fila;
+                    break;
+                }
+            }
+            document.getElementById("codigoEliminar").value = codigo;
+            document.getElementById("btnEliminar").disabled = false;
+        }
+    </script>
+
+</body>
+</html>

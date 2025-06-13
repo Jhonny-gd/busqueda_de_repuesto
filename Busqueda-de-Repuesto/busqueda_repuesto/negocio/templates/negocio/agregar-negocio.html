@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head> 
+    <meta charset="UTF-8">
+    <title>Agregar Negocio</title>
+    <link rel="stylesheet" href="{% static 'negocio/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+
+    <div class="tira-celeste">
+        <p class="text-end text-muted" style="text-align: right; margin: 10px;">
+            Bienvenido, {{ request.user.username }} |
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="color:white">
+                Cerrar Sesión <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </p>
+        <img src="{% static 'negocio/images/logo.png' %}" alt="" />
+    </div>
+
+    <h1><img src="{% static 'negocio/images/fabrica.png' %}" alt="" class="logo2"> Agregar Negocio</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="mensaje-de-alerta {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+            <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <fieldset class="fieldset">
+            <legend>Datos del Negocio</legend>
+            <div class="form-columnas">
+                <div class="columna">
+                    <div class="form-linea">
+                        {{ form.codigo.label_tag }}
+                        <input type="text" name="codigo" value="{{ form.codigo.value|default:'' }}" maxlength="5" required>
+                        {% if form.codigo.errors %}
+                            <span class="mensaje-de-alerta error">{{ form.codigo.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-linea">
+                    {{form.nombre.label_tag}}
+                        {{form.nombre}}
+                    </div>
+                </div>
+                <div class="columna">
+                    <div class="form-linea">
+                        {{form.nit.label_tag}}
+                        {{form.nit}}
+                        </div>
+                    <div class="form-linea">
+                        {{form.ubicacion.label_tag}}
+                        {{form.ubicacion}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="bi bi-save" type="submit"> Guardar</button>
+                <button class="bi bi-box-arrow-left" type="button" onclick="window.location.href='{% url 'gestionarnegocio' %}'"> Cancelar</button>
+            </div>
+        </fieldset>
+    </form>
+
+    </body>
+</html>

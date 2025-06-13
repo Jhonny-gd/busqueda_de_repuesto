@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actualizar Repuestos</title>
+    <link rel="stylesheet" href="{% static 'repuesto/styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .messages { list-style: none; padding: 10px; margin: 10px auto; max-width: 600px; font-weight: bold; }
+        .messages .success { color: green; }
+        .messages .error { color: red; }
+    </style>
+</head>
+<body>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<div>
+    <div class="tira-celeste">
+        <p class="text-end text-muted" style="text-align: right; margin: 10px;">
+            Bienvenido, {{ request.user.username }} |
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="color:white">Cerrar Sesión <i class="bi bi-box-arrow-right"></i></a>
+        </p>
+        <img src="{% static 'repuesto/images/logo.png' %}" alt="" class=""/>
+    </div>
+
+    <div class="tamaño-2">
+        <h1>
+            <img src="{% static 'repuesto/images/actualizar-carpeta.png' %}" class="titulo-01" alt="icono para actualizar repuesto">
+            Actualizar Repuesto
+        </h1>
+        <img src="{% static 'repuesto/images/dia-laboral.png' %}" class="img-03" alt="mano">
+          <div class="button-salir">
+                       
+                        <button class="bi bi-box-arrow-left" type="button" onclick="window.location.href='{% url 'gestionarrepuesto' %}'"> Salir</button>
+                    </div>
+        <!-- FORMULARIO DE BÚSQUEDA -->
+        <form method="get">
+            {% csrf_token %}
+            <fieldset class="medidas_actualizacion">
+                <legend>Buscar Repuesto</legend>
+                <label for="nombre-repuesto">Nombre</label>
+                <input type="text" id="nombre-repuesto" name="nombre-repuesto">
+
+                <label for="categoria_buscar">Categoría</label>
+                <select name="categoria_buscar" id="categoria_buscar">
+                    <option value="">--Seleccionar categoría--</option>
+                    <option value="sitema_electrico">Sistema eléctrico y electrónico</option>
+                    <option value="sistema_frenos">Sistema de frenos</option>
+                    <option value="interior_vehiculo">Interior del vehículo</option>
+                    <option value="sistema_refrigeracion">Sistema de refrigeración</option>
+                    <option value="sistema_combustible">Sistema de combustible</option>
+                    <option value="accesorios_equipacion">Accesorios y equipamiento</option>
+                    <option value="ruedas">Ruedas y neumáticos</option>
+                    <option value="sistema_transmision">Sistema de transmisión</option>
+                    <option value="carroceria">Carrocería y estructura</option>
+                    <option value="sistema_climatizacion">Sistema de climatización</option>
+                    <option value="iluminacion">Iluminación y señalización</option>
+                    <option value="motor">Motor y componentes</option>
+                    <option value="suspension">Sistema de suspensión y dirección</option>
+                    <option value="escape">Sistema de escape</option>
+                </select>
+
+                <button class="bi bi-search" type="submit"> Buscar Repuesto</button>
+
+                <table id="tabla-repuesto">
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Número de parte</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Compatibilidad</th>
+                            <th>Negocio</th>
+                            <th>Ubicación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for repuesto in repuestos %}
+                        <tr class="fila-repuesto"
+                            data-num_parte="{{ repuesto.num_parte }}"
+                            data-nombre="{{ repuesto.nombre }}"
+                            data-marca="{{ repuesto.marca }}"
+                            data-precio="{{ repuesto.precio }}"
+                            data-cantidad="{{ repuesto.cantidad }}"
+                            data-categoria="{{ repuesto.categoria }}"
+                            data-estado="{{ repuesto.estado }}"
+                            data-negocio="{{ repuesto.negocio.id }}">
+                            <td>{{ repuesto.categoria }}</td>
+                            <td>{{ repuesto.num_parte }}</td>
+                            <td>{{ repuesto.nombre }}</td>
+                            <td>{{ repuesto.marca }}</td>
+                            <td>{{ repuesto.precio }}</td>
+                            <td>{{ repuesto.cantidad }}</td>
+                            <td>{{ repuesto.estado }}</td>
+                            <td>
+                                {% for v in repuesto.compatibilidad.all %}
+                                    {{ v.marca }} {{ v.modelo }} {{ v.anio }}{% if not forloop.last %}, {% endif %}
+                                {% empty %} Sin vehículos {% endfor %}
+                            </td>
+                            <td>{{ repuesto.negocio.nombre }}</td>
+                            <td>{{ repuesto.negocio.ubicacion }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+        
+
+        <!-- FORMULARIO PARA ACTUALIZAR -->
+        <form method="post" enctype="multipart/form-data" id="form-actualizar">
+            {% csrf_token %}
+           
+                {{ form.non_field_errors }}
+                <fieldset class="medidas_actualizacion2">
+    <legend>Actualizar Datos</legend>
+
+    <div class="lado_izquierdo">
+        <input type="hidden" name="num_parte" id="num_parte" value="{{ form.num_parte.value }}">
+
+        <label for="nombre">Nombre</label>
+        {{ form.nombre.errors }}
+        {{ form.nombre }}
+        <br>
+
+        <label for="numero_parte">Número de parte</label>
+        <input type="text" id="numero_parte" value="{{ form.num_parte.value }}" disabled>
+        <br>
+
+        <label for="marca">Marca</label>
+        {{ form.marca.errors }}
+        {{ form.marca }}
+        <br>
+
+        <label for="precio">Precio</label>
+        {{ form.precio.errors }}
+        <input type="number" name="precio" id="precio" step="0.01" min="0" max="99999.99" value="{{ form.precio.value|default_if_none:'' }}" required>
+        <br>
+
+        <label for="cantidad">Cantidad</label>
+        {{ form.cantidad.errors }}
+        <input type="number" name="cantidad" id="cantidad" min="0" max="99999" value="{{ form.cantidad.value|default_if_none:'' }}" required>
+        <br>
+    </div>
+
+    <div class="lado_derecho">
+        <label for="estado">Estado</label>
+        {{ form.estado.errors }}
+        {{ form.estado }}
+        <br>
+
+        <label for="categoria">Categoría</label>
+        {{ form.categoria.errors }}
+        {{ form.categoria }}
+        <br>
+
+        <label for="negocio">Negocio</label>
+        {{ form.negocio.errors }}
+        {{ form.negocio }}
+        <br>
+
+        <label for="{{ form.compatibilidad.id_for_label }}">Compatibilidad</label>
+        <select id="compatibilidad" name="compatibilidad" multiple>
+            {% for v in vehiculos_compatibles %}
+                <option value="{{ v.id_auto }}" selected>
+                    {{ v.marca }} {{ v.modelo }} ({{ v.anio }}) {{ v.transmision }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="imagen">Foto</label>
+        {{ form.foto.errors }}
+        <div class="button-img">
+            {% if form.instance.foto %}
+                <img id="preview" src="{{ form.instance.foto.url }}" alt="Vista previa">
+            {% else %}
+                <img id="preview" src="{% static 'repuesto/images/imagen-placeholder.png' %}" alt="Vista previa">
+            {% endif %}
+            <label for="imagen" class="bi bi-images button-img-label"> Agregar imagen</label>
+            <input type="file" id="imagen" name="foto" accept="image/*" style="display: none;" />
+        </div>
+    </div>
+           <div class="button-actualizar">
+        <button type="submit" class="bi bi-save"> Actualizar Repuesto</button>
+    </div>
+</fieldset>
+    
+         
+            
+        </form>
+
+        <!-- COMPATIBILIDAD VEHÍCULOS -->
+       <fieldset class="medidas_actualizacion3">
+    <legend>Compatibilidad</legend>
+
+    <div class="center-group">
+        <label for="modelo_buscar">Modelo:</label>
+        <input type="text" id="modelo_buscar" name="modelo_buscar" autocomplete="off">
+    </div>
+
+    <div class="posicion-buscar">
+        <button type="button" id="btnBuscar" class="bi bi-search"> Buscar</button>
+        <button type="button" id="btnAñadir" class="bi bi-plus-circle"> Añadir a lista</button>
+    </div>
+
+    <!-- TABLA OCULTA HASTA BUSCAR -->
+    <div id="contenedor-tabla-vehiculos" style="display: none;">
+        <div class="table-container">
+            <table id="tablavehiculos">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Tipo</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Transmisión</th>
+                        <th>Año</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in vehiculos %}
+                    <tr>
+                        <td>{{ v.id_auto }}</td>
+                        <td>{{ v.tipo }}</td>
+                        <td>{{ v.marca }}</td>
+                        <td>{{ v.modelo }}</td>
+                        <td>{{ v.transmision }}</td>
+                        <td>{{ v.anio }}</td>
+                        <td>
+                            <input type="checkbox"
+                                class="select-vehiculo"
+                                data-id="{{ v.id_auto }}"
+                                data-marca="{{ v.marca }}"
+                                data-modelo="{{ v.modelo }}"
+                                data-anio="{{ v.anio }}"
+                                data-transmision="{{ v.transmision }}">
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7">No hay vehículos registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</fieldset>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{% static 'repuesto/js/preview.js' %}"></script>
+<script src="{% static 'repuesto/js/busqueda.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filas = document.querySelectorAll('.fila-repuesto');
+    filas.forEach(function (fila) {
+        fila.addEventListener('click', function () {
+            const numParte = fila.getAttribute('data-num_parte');
+            if (numParte) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('num_parte', numParte);
+                window.location.href = url.toString().split('#')[0];
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.getElementById('btnAñadir').addEventListener('click', function () {
+    const select = document.getElementById('compatibilidad');
+    const checkboxes = document.querySelectorAll('.select-vehiculo:checked');
+
+    checkboxes.forEach(function (checkbox) {
+        const id = checkbox.dataset.id;
+        const texto = checkbox.dataset.marca + ' ' + checkbox.dataset.modelo;
+
+        // Verifica si ya existe en el select
+        if (![...select.options].some(opt => opt.value === id)) {
+            const option = new Option(texto, id, true, true);
+            select.add(option);
+        }
+    });
+});
+</script>
+</body>
+</html>
